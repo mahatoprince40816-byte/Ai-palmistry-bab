@@ -37,4 +37,4 @@ exports.handler = async (event) => {
     } catch (error) {
         return { statusCode: 500, body: JSON.stringify({ error: "Failed to reach the stars." }) };
     }
-};
+}
