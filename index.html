@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Palmistry AI - Your Future</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #1a1a2e; color: white; padding: 20px; }
+        .box { border: 2px solid #e94560; padding: 20px; border-radius: 15px; background: #16213e; }
+        button { background: #e94560; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin-top: 10px; }
+        #result { margin-top: 20px; font-style: italic; color: #0f3460; background: white; padding: 10px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>Hand Reader AI</h1>
+        <p>Upload a clear photo of your palm to see your future.</p>
+        
+        <input type="file" id="palmImage" accept="image/*">
+        <br>
+        <button onclick="startReading()">Read My Palm</button>
+
+        <div id="result">Your prediction will appear here...</div>
+    </div>
+
+    <script>
+        function startReading() {
+            document.getElementById('result').innerHTML = "Analyzing your lines... please wait.";
+            // This is where you will later connect the Gemini API
+        }
+    </script>
+    <p style="font-size: 10px; margin-top: 20px;">For entertainment purposes only.</p>
+</body>
+          </html>
+  <script>
+async function startReading() {
+    const fileInput = document.getElementById('palmImage');
+    const resultDiv = document.getElementById('result');
+
+    if (fileInput.files.length === 0) {
+        alert("Please upload a photo of your palm first!");
+        return;
+    }
+
+    resultDiv.innerHTML = "✨ The spirits are analyzing your palm... please wait.";
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = async () => {
+        const base64Data = reader.result.split(',')[1];
+
+        // This calls a "Netlify Function" to keep your API Key hidden
+        try {
+            const response = await fetch('/.netlify/functions/get-prediction', {
+                method: 'POST',
+                body: JSON.stringify({ image: base64Data })
+            });
+            const data = await response.json();
+            resultDiv.innerHTML = `<strong>Your Future:</strong><br>${data.prediction}`;
+        } catch (error) {
+            resultDiv.innerHTML = "The connection to the stars was lost. Try again!";
+        }
+    };
+    reader.readAsDataURL(file);
+}
+</script>
+        
